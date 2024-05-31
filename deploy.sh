@@ -1,4 +1,5 @@
-echo "Deploying to AWS..."
+npm install
 
-aws s3 cp ./dist s3://webbingbucket --recursive
+npm run build
 
+node server.js
