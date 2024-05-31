@@ -1,0 +1,30 @@
+replicaCount: 1
+
+image:
+  repository: my-docker-repo/my-app
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: LoadBalancer
+  port: 80
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 250m
+    memory: 256Mi
+
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: nginx
+  hosts:
+    - host: my-app.dev.example.com
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+
+# Other configurations as necessary

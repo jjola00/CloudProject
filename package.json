@@ -1,0 +1,31 @@
+{
+    "name": "jjola00.github.io",
+    "version": "1.0.0",
+    "description": "A drawing gallery project",
+    "main": "server.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "node server.js"
+    },
+    "keywords": [
+        "drawing",
+        "gallery",
+        "aws",
+        "express"
+    ],
+    "author": "jjola00",
+    "license": "ISC",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/jjola00/jjola00.github.io.git"
+    },
+    "dependencies": {
+        "@aws-sdk/client-dynamodb": "^3.583.0",
+        "@aws-sdk/client-s3": "^3.583.0",
+        "aws-crt": "^1.0.0",
+        "aws-sdk": "^2.1630.0",
+        "dotenv": "^16.4.5",
+        "express": "^4.19.2",
+        "uuid": "^9.0.1"
+    }
+}
