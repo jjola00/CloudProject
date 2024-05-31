@@ -2,9 +2,7 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+    branches: [ main ]
 
 jobs:
   build:
@@ -14,19 +12,26 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Build Docker image
+      run: |
+        docker build -t website-image .
+        docker tag website-image:latest 154260813552.dkr.ecr.us-east-1.amazonaws.com/website-repo:latest
+        docker push 154260813552.dkr.ecr.us-east-1.amazonaws.com/website-repo:latest
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Install kubectl
+      uses: azure/k8s-set-context@v1
       with:
-        node-version: '14'
+        kubeconfig: ${{ secrets.KUBE_CONFIG_DATA }}
 
-    - name: Install dependencies
-      run: npm install
-
-    - name: Run tests
-      run: npm test
-
-    - name: Build project
-      run: npm run build
-
-    - name: Deploy to AWS
-      run: ./deploy.sh
+    - name: Deploy to Kubernetes
+      run: |
+        kubectl apply -f deployment.yaml
+        kubectl rollout restart deployment/website-deployment
