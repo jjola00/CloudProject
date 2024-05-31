@@ -38,7 +38,3 @@ jobs:
         docker build -t $ECR_REPOSITORY:$IMAGE_TAG .
         docker tag $ECR_REPOSITORY:$IMAGE_TAG 154260813552.dkr.ecr.us-east-1.amazonaws.com/$ECR_REPOSITORY:$IMAGE_TAG
         docker push 154260813552.dkr.ecr.us-east-1.amazonaws.com/$ECR_REPOSITORY:$IMAGE_TAG
-
-      run: |
-        chmod +x deploy.sh
-        ./deploy.sh
