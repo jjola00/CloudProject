@@ -4,7 +4,7 @@
     "description": "A drawing gallery project",
     "main": "server.js",
     "scripts": {
-        "test": "jest"
+        "test": "mocha"
     },
     "keywords": [
         "drawing",
@@ -26,6 +26,8 @@
         "dotenv": "^16.4.5",
         "express": "^4.19.2",
         "uuid": "^9.0.1"
+    },
+    "devDependencies": {
+        "mocha": "^10.4.0"
     }
-    
 }
