@@ -4,7 +4,8 @@
     "description": "A drawing gallery project",
     "main": "server.js",
     "scripts": {
-    },
+        "build": "echo 'No build command specified'"
+      },
     "keywords": [
         "drawing",
         "gallery",
