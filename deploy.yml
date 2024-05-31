@@ -42,5 +42,5 @@ jobs:
     - name: Kubernetes Deployment
       env:
         KUBECONFIG: ${{secrets.KUBECONFIG}}
-      run:
+      run:  |
         aws eks update.config --region us-east-1 --name website-cluster
