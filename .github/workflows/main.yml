@@ -15,23 +15,32 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
 
-    - name: Build Docker image
-      run: |
-        docker build -t website-image .
-        docker tag website-image:latest 154260813552.dkr.ecr.us-east-1.amazonaws.com/website-repo:latest
-        docker push 154260813552.dkr.ecr.us-east-1.amazonaws.com/website-repo:latest
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Install kubectl
-      uses: azure/k8s-set-context@v1
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
       with:
-        kubeconfig: ${{ secrets.KUBE_CONFIG_DATA }}
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-session-token: ${{secrets.AWS_SESSION_TOKEN}}
+        aws-region: us-east-1
 
-    - name: Deploy to Kubernetes
+    - name: Log in to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+      with:
+        registry: 154260813552.dkr.ecr.us-east-1.amazonaws.com
+        region: us-east-1
+
+    - name: Deploy to AWS
+      env:
+        ECR_REPOSITORY: website-repo
+        IMAGE_TAG: latest
+      run:
+        docker build -t $ECR_REPOSITORY:$IMAGE_TAG .
+        docker tag $ECR_REPOSITORY:$IMAGE_TAG 154260813552.dkr.ecr.us-east-1.amazonaws.com/$ECR_REPOSITORY:$IMAGE_TAG
+        docker push 154260813552.dkr.ecr.us-east-1.amazonaws.com/$ECR_REPOSITORY:$IMAGE_TAG
+
+    - name: Kubernetes Deployment
+      env:
+        KUBECONFIG: ${{ secrets.KUBECONFIG }}
       run: |
-        kubectl apply -f deployment.yaml
-        kubectl rollout restart deployment/website-deployment
+        aws eks --region us-east-1 update-kubeconfig --name website-cluster 
